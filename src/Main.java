@@ -21,6 +21,10 @@ public class Main {
             System.out.println("Player " + playerNum + ", please select a box (1-9) to fill.");
             game.printBoard();
             int box = in.nextInt();
+            while (!game.checkBoxAvailability(box)) {
+                System.out.println("Sorry, this box has already been selected. Please select another.");
+                box = in.nextInt();
+            }
             game.setBox(box, player);
             game.checkWin();
             game.switchPlayer();

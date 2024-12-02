@@ -81,6 +81,19 @@ public class Game {
     }
 
     /**
+     * Checks if the box the player has selected has already been selected.
+     *
+     * @param boxNum the box selected by player
+     * @return whether the box is available
+     */
+    public boolean checkBoxAvailability(int boxNum) {
+        if (board[--boxNum] != 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Checks if the game has been won by using a brute force approach.
      */
     public void checkWin() {
