@@ -14,6 +14,9 @@ public class Game {
     /** Tracks whether the game should continue or not */
     private boolean cont;
 
+    /** Tracks if a player won the game */
+    private boolean playerWon;
+
     /**
      * Fills board array with zeros, fills marks array with spaces, sets player to
      * true for player 1, and cont to true so the game can start.
@@ -23,6 +26,7 @@ public class Game {
         marks = new char[]{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
         player = true;
         cont = true;
+        playerWon = false;
     }
 
     /**
@@ -61,6 +65,14 @@ public class Game {
     }
 
     /**
+     *
+     * @return whether one of the players won yet
+     */
+    public boolean getPlayerWon() {
+        return playerWon;
+    }
+
+    /**
      * Sets the correct number and symbols in the board and marks arrays based
      * on which player's turn it is. boxNum is 1 greater than the index, so it is decremented
      * at the beginning.
@@ -81,13 +93,18 @@ public class Game {
     }
 
     /**
-     * Checks if the box the player has selected has already been selected.
+     * Checks if the box the player has selected a valid box number. If they
+     * have, it checks if the box has already been selected.
      *
      * @param boxNum the box selected by player
      * @return whether the box is available
      */
     public boolean checkBoxAvailability(int boxNum) {
-        if (board[--boxNum] != 0) {
+        if (boxNum < 1 || boxNum > 9) {
+            System.out.println("This is not a valid box number. Please select another box.");
+            return false;
+        } else if (board[--boxNum] != 0) {
+            System.out.println("Sorry, this box has already been selected. Please select another.");
             return false;
         }
         return true;
@@ -101,32 +118,67 @@ public class Game {
         if (!player) {ans *= -1;}
 
         if (board[0] + board[1] + board[2] == ans) {
-            this.setCont(false);
+            markWon();
         } else if (board[3] + board[4] + board[5] == ans) {
-            this.setCont(false);
+            markWon();
         } else if (board[6] + board[7] + board[7] == ans) {
-            this.setCont(false);
+            markWon();
         } else if (board[0] + board[3] + board[6] == ans) {
-            this.setCont(false);
+            markWon();
         } else if (board[1] + board[4] + board[7] == ans) {
-            this.setCont(false);
+            markWon();
         } else if (board[2] + board[5] + board[8] == ans) {
-            this.setCont(false);
+            markWon();
         } else if (board[0] + board[4] + board[8] == ans) {
-            this.setCont(false);
+            markWon();
         } else if (board[2] + board[4] + board[6] == ans) {
+            markWon();
+        }
+    }
+
+    /**
+     * Helper for checkWin(). Sets cont to false so game ends and
+     * sets playerWon to true to show that the game did not end in a tie.
+     */
+    private void markWon() {
+        this.setCont(false);
+        playerWon = true;
+    }
+
+    /**
+     * Checks to see if the board is full and a draw should be called.
+     * Must call after checkWin() or a false draw may be called.
+     */
+    public void checkDraw() {
+        int sum = 0;
+        for (int num : board) {
+            sum += Math.abs(num);
+        }
+        if (sum == 9) {
             this.setCont(false);
         }
     }
 
     /**
-     * Prints the game board using X's and O's
+     * Prints the current game board using X's and O's
      */
     public void printBoard() {
         System.out.println(" " + marks[0] + " | " + marks[1] + " | " + marks[2]);
         for (int i = 3; i < 9; i += 3) {
             System.out.println("---+---+---");
             System.out.println(" " + marks[i] + " | " + marks[i + 1] + " | " + marks[i + 2]);
+        }
+    }
+
+    /**
+     * Prints the game board with numbers 1 - 9 in their respective spots
+     * so that the players know which number to select for a box.
+     */
+    public void printStartBoard() {
+        System.out.println(" " + 1 + " | " + 2 + " | " + 3);
+        for (int i = 4; i < 9; i += 3) {
+            System.out.println("---+---+---");
+            System.out.println(" " + i + " | " + (i + 1) + " | " + (i + 2));
         }
     }
 
